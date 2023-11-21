@@ -80,6 +80,6 @@ export async function DELETE(
 
     } catch (error) {
         console.log('[COMPANION_DELETE]', error)
-        return NextResponse('Internal Error', { status: 500 })
+        return new NextResponse('Internal Error', { status: 500 })
     }
 }
