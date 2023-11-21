@@ -33,14 +33,16 @@ export class MemoryManager {
         companionFileName: string
     ) {
         const pineconeClient = <PineconeClient>this.vectorDBClient;
+        const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX! || "");
 
-        const pineconeIndex = pineconeClient.Index(
-            process.env.PINECONE_INDEX! || ""
-        );
+        // Assuming OpenAIEmbeddings may not directly match the expected type.
+// You might need to create an adapter or use a method that aligns with the expected type.
+        const openAIEmbeddings = new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_API_KEY });
+        const adaptedEmbeddings = adaptOpenAIEmbeddingsToExpectedType(openAIEmbeddings);
 
         const vectorStore = await PineconeStore.fromExistingIndex(
-            new OpenAIEmbeddings({ openAIApiKey: process.env.OPENAI_API_KEY }),
-            { pineconeIndex }
+            adaptedEmbeddings,
+            { pineconeIndex, namespace: file.id }
         );
 
         const similarDocs = await vectorStore
